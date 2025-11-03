@@ -4,13 +4,13 @@ namespace MvcLibrary.Data
 {
     public class SeedData
     {
-        public static void InitializeUser(IRepository<User> repository)
+        public static void InitializeUser(IBaseDataModel repository)
         {
-            if (repository.Items.Any())
+            if (repository.Users.Any())
             {
                 return;
             }
-            repository.Items.Add(
+            repository.Users.Add(
                 new User
                 {
                     FullName = "Ehsan Arefzadeh",
@@ -22,7 +22,7 @@ namespace MvcLibrary.Data
 
                 }
             );
-            repository.Items.Add(
+            repository.Users.Add(
                 new User
                 {
                     FullName = "Alireza Arefzadeh",
@@ -33,7 +33,7 @@ namespace MvcLibrary.Data
                     IsAdmin = false
                 }
             );
-            repository.Items.Add(
+            repository.Users.Add(
                 new User
                 {
                     FullName = "Pouyan Arefzadeh",
@@ -45,13 +45,13 @@ namespace MvcLibrary.Data
                 }
             );
         }
-        public static void InitializeBook(IRepository<Book> repository)
+        public static void InitializeBook(IBaseDataModel repository)
         {
-            if (repository.Items.Any())
+            if (repository.Books.Any())
             {
                 return;
             }
-            repository.Items.Add(
+            repository.Books.Add(
                 new Book
                 {
                     Title = "CSharp in a nutshell",
@@ -60,7 +60,7 @@ namespace MvcLibrary.Data
                     Year = "2023"
                 }
             );
-            repository.Items.Add(
+            repository.Books.Add(
                 new Book
                 {
                     Title = "Clean Code",
@@ -70,7 +70,7 @@ namespace MvcLibrary.Data
                     IsAvailable = false
                 }
             );
-            repository.Items.Add(
+            repository.Books.Add(
                 new Book
                 {
                     Title = "ASP.NET",
@@ -79,14 +79,23 @@ namespace MvcLibrary.Data
                     Year = "2024"
                 }
             );
+            repository.Books.Add(
+                new Book
+                {
+                    Title = "Toy story",
+                    Author = "Disney - Pixar",
+                    Genre = "Animation",
+                    Year = "2024"
+                }
+            );
         }
-        public static void InitializeBorrow(IRepository<Borrow> repository)
+        public static void InitializeBorrow(IBaseDataModel repository)
         {
-            if (repository.Items.Any())
+            if (repository.Borrows.Any())
             {
                 return;
             }
-            repository.Items.Add(
+            repository.Borrows.Add(
                 new Borrow
                 {
                     BookId = 2,

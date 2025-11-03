@@ -5,9 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<IRepository<Book>, BookRepository>();
-builder.Services.AddSingleton<IRepository<User>, UserRepository>();
-builder.Services.AddSingleton<IRepository<Borrow>, BorrowRepository>();
+builder.Services.AddSingleton<IBaseDataModel, BaseDataModel>();
+builder.Services.AddScoped<IRepository<Book>, BookRepository>();
+builder.Services.AddScoped<IRepository<User>, UserRepository>();
+builder.Services.AddScoped<IRepository<Borrow>, BorrowRepository>();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -28,12 +29,10 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    var userRepo = services.GetRequiredService<IRepository<User>>();
-    var bookRepo = services.GetRequiredService<IRepository<Book>>();
-    var borrowRepo = services.GetRequiredService<IRepository<Borrow>>();
-    SeedData.InitializeUser(userRepo);
-    SeedData.InitializeBook(bookRepo);
-    SeedData.InitializeBorrow(borrowRepo);
+    var baseData = services.GetRequiredService<IBaseDataModel>();
+    SeedData.InitializeUser(baseData);
+    SeedData.InitializeBook(baseData);
+    SeedData.InitializeBorrow(baseData);
 }
 
 app.UseHttpsRedirection();

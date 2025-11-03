@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Book>
+﻿@model BookGenreViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -11,23 +11,32 @@
         <a class="btn-outline-primary" asp-action="Create">Create New</a>
     </p>
 }
+<form asp-controller="Book" asp-action="Index">
+    <p>
+        <select name="bookGenre" asp-items="Model.Genres">
+            <option value="">All</option>
+        </select>
+        <label>Title: <input type="text" name="searchString" /></label>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Title)
+                @Html.DisplayNameFor(model => model.Books[0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Author)
+                @Html.DisplayNameFor(model => model.Books[0].Author)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Genre)
+                @Html.DisplayNameFor(model => model.Books[0].Genre)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Year)
+                @Html.DisplayNameFor(model => model.Books[0].Year)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsAvailable)
+                @Html.DisplayNameFor(model => model.Books[0].IsAvailable)
             </th>
             @if (HttpContextAccessor.HttpContext.Session.GetInt32("_userType") == 1)
             {
@@ -36,7 +45,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Books)
         {
             <tr>
 

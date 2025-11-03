@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MvcLibrary.Data;
 using MvcLibrary.Models;
 
@@ -11,9 +12,25 @@ namespace MvcLibrary.Controllers
         {
             Repository = repository;
         }
-        public IActionResult Index()
+        public IActionResult Index(string searchString, string bookGenre)
         {
-            return View(Repository.GetAll());
+            IEnumerable<string> genreQuery = Repository.GetAll().Select(m => m.Genre!);
+            var books = Repository.GetAll();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                books = books.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+            }
+            if (!string.IsNullOrEmpty(bookGenre))
+            {
+                books = books.Where(x => x.Genre == bookGenre);
+            }
+            var bookGenreVM = new BookGenreViewModel
+            {
+                Genres = new SelectList(genreQuery.Distinct().ToList()),
+                Books = books.ToList()
+            };
+
+            return View(bookGenreVM);
         }
 
         public IActionResult Create()

@@ -4,10 +4,15 @@ namespace MvcLibrary.Data
 {
     public class BorrowRepository : IRepository<Borrow>
     {
-        public List<Borrow> Items { get; set; } = new();
-        public void Add(Borrow item) => Items.Add(item);
-        public void Remove(Borrow item) => Items.Remove(item);
+        private readonly IBaseDataModel baseDataModel;
+
+        public BorrowRepository(IBaseDataModel baseDataModel)
+        {
+            this.baseDataModel = baseDataModel;
+        }
+        public void Add(Borrow item) => baseDataModel.Borrows.Add(item);
+        public void Remove(Borrow item) => baseDataModel.Borrows.Remove(item);
         public void Update(Borrow item) { }
-        public IEnumerable<Borrow> GetAll() => Items;
+        public IEnumerable<Borrow> GetAll() => baseDataModel.Borrows;
     }
 }
