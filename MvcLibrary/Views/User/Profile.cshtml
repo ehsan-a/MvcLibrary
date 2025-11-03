@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Profile";
+}
+
+<h1>Profile</h1>
+
+<h4>User</h4>
+<hr />
+
+
+<div>
+    <a asp-action="Logout">Logout</a>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
