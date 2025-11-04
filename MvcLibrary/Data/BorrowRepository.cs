@@ -4,15 +4,20 @@ namespace MvcLibrary.Data
 {
     public class BorrowRepository : IRepository<Borrow>
     {
-        private readonly IBaseDataModel baseDataModel;
+        private readonly IBaseDataModel BaseDataModel;
 
         public BorrowRepository(IBaseDataModel baseDataModel)
         {
-            this.baseDataModel = baseDataModel;
+            BaseDataModel = baseDataModel;
+            foreach (var item in baseDataModel.Borrows)
+            {
+                item.Book = baseDataModel.Books.Find(x => x.Id == item.BookId);
+                item.User = baseDataModel.Users.Find(x => x.Id == item.UserId);
+            }
         }
-        public void Add(Borrow item) => baseDataModel.Borrows.Add(item);
-        public void Remove(Borrow item) => baseDataModel.Borrows.Remove(item);
+        public void Add(Borrow item) => BaseDataModel.Borrows.Add(item);
+        public void Remove(Borrow item) => BaseDataModel.Borrows.Remove(item);
         public void Update(Borrow item) { }
-        public IEnumerable<Borrow> GetAll() => baseDataModel.Borrows;
+        public IEnumerable<Borrow> GetAll() => BaseDataModel.Borrows;
     }
 }

@@ -7,40 +7,44 @@ namespace MvcLibrary.Controllers
 {
     public class BookController : Controller
     {
-        public IRepository<Book>? Repository { get; set; }
-        public BookController(IRepository<Book> repository)
+        public BookRepository? Repository { get; set; }
+        public IRepository<Category>? CategoryRepo { get; set; }
+        public BookController(IRepository<Book> repository, IRepository<Category> categoryRepo)
         {
-            Repository = repository;
+            Repository = repository as BookRepository;
+            CategoryRepo = categoryRepo;
         }
-        public IActionResult Index(string searchString, string bookGenre)
+        public IActionResult Index(string searchString, string bookCategory)
         {
-            IEnumerable<string> genreQuery = Repository.GetAll().Select(m => m.Genre!);
-            var books = Repository.GetAll();
+            IEnumerable<Category> categoryQuery = CategoryRepo.GetAll();
+            var books = Repository.GetAll().Where(x => x.IsDeleted == false);
             if (!String.IsNullOrEmpty(searchString))
             {
                 books = books.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
             }
-            if (!string.IsNullOrEmpty(bookGenre))
+            if (!string.IsNullOrEmpty(bookCategory))
             {
-                books = books.Where(x => x.Genre == bookGenre);
+                books = books.Where(x => x.CategoryId == int.Parse(bookCategory));
             }
-            var bookGenreVM = new BookGenreViewModel
+            var bookFilterVM = new FilterViewModel<Book>
             {
-                Genres = new SelectList(genreQuery.Distinct().ToList()),
-                Books = books.ToList()
+                SelectListItems = new SelectList(categoryQuery, "Id", "Title", bookCategory),
+                Items = books.ToList(),
+                SearchString = searchString,
             };
 
-            return View(bookGenreVM);
+            return View(bookFilterVM);
         }
 
         public IActionResult Create()
         {
             if (HttpContext.Session.GetInt32("_userType") != 1)
                 return NotFound();
+            ViewData["CategoryId"] = new SelectList(CategoryRepo.GetAll(), "Id", "Title");
             return View();
         }
         [HttpPost]
-        public IActionResult Create([Bind("Title", "Author", "Genre", "Year")] Book book)
+        public IActionResult Create([Bind("Title", "Author", "CategoryId", "Year")] Book book)
         {
             if (HttpContext.Session.GetInt32("_userType") != 1)
                 return NotFound();
@@ -48,20 +52,47 @@ namespace MvcLibrary.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit()
+        public IActionResult Edit(int id)
         {
-            return View();
+            var book = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+            ViewData["CategoryId"] = new SelectList(CategoryRepo.GetAll(), "Id", "Title", id);
+            return View(book);
+        }
+        [HttpPost]
+        public IActionResult Edit(int id, [Bind("Id", "Title", "Author", "CategoryId", "Year")] Book book)
+        {
+            if (id != book.Id) return NotFound();
+            if (ModelState.IsValid)
+            {
+                var preBook = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+                preBook.Title = book.Title;
+                preBook.Author = book.Author;
+                preBook.CategoryId = book.CategoryId;
+                preBook.Year = book.Year;
+            }
+            ViewData["CategoryId"] = new SelectList(CategoryRepo.GetAll(), "Id", "Title", id);
+            return View(book);
         }
 
-        public IActionResult Edit(bool notUsed)
+        public IActionResult Delete(int id)
         {
-            return View();
+            var book = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+            if (book == null) return NotFound();
+            return View(book);
+        }
+        [HttpPost, ActionName("Delete")]
+        public IActionResult DeleteConfirmed(int id)
+        {
+            var book = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+            if (book != null) Repository.Delete(book);
+            return RedirectToAction("Index");
         }
 
-        public IActionResult Delete()
+        public IActionResult Details(int id)
         {
-            return View();
+            var book = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+            if (book == null) return NotFound();
+            return View(book);
         }
-
     }
 }

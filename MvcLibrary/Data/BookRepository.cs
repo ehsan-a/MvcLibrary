@@ -9,11 +9,16 @@ namespace MvcLibrary.Data
         public BookRepository(IBaseDataModel baseDataModel)
         {
             this.baseDataModel = baseDataModel;
+            foreach (var item in baseDataModel.Books)
+            {
+                item.Category = baseDataModel.Categories.Find(x => x.Id == item.CategoryId);
+            }
         }
         public void Add(Book item) => baseDataModel.Books.Add(item);
         public void Remove(Book item) => baseDataModel.Books.Remove(item);
         public void Delete(Book item) => item.IsDeleted = true;
         public void Update(Book item) { }
         public IEnumerable<Book> GetAll() => baseDataModel.Books;
+
     }
 }

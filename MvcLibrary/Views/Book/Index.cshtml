@@ -1,4 +1,4 @@
-﻿@model BookGenreViewModel
+﻿@model FilterViewModel<Book>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,10 +13,10 @@
 }
 <form asp-controller="Book" asp-action="Index">
     <p>
-        <select name="bookGenre" asp-items="Model.Genres">
+        <select name="bookCategory" asp-items="Model.SelectListItems">
             <option value="">All</option>
         </select>
-        <label>Title: <input type="text" name="searchString" /></label>
+        <label>Title: <input type="text" asp-for="SearchString" value="@Model.SearchString" /></label>
         <input type="submit" value="Filter" />
     </p>
 </form>
@@ -24,19 +24,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Books[0].Title)
+                @Html.DisplayNameFor(model => model.Items[0].Title)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Books[0].Author)
+                @Html.DisplayNameFor(model => model.Items[0].Author)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Books[0].Genre)
+                @Html.DisplayNameFor(model => model.Items[0].CategoryId)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Books[0].Year)
+                @Html.DisplayNameFor(model => model.Items[0].Year)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Books[0].IsAvailable)
+                @Html.DisplayNameFor(model => model.Items[0].IsAvailable)
             </th>
             @if (HttpContextAccessor.HttpContext.Session.GetInt32("_userType") == 1)
             {
@@ -45,7 +45,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Books)
+        @foreach (var item in Model.Items)
         {
             <tr>
 
@@ -56,7 +56,7 @@
                     @Html.DisplayFor(modelItem => item.Author)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Genre)
+                    @Html.DisplayFor(modelItem => item.Category.Title)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Year)

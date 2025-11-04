@@ -56,7 +56,7 @@ namespace MvcLibrary.Data
                 {
                     Title = "CSharp in a nutshell",
                     Author = "Oriely",
-                    Genre = "Learning",
+                    CategoryId = 1,
                     Year = "2023"
                 }
             );
@@ -65,7 +65,7 @@ namespace MvcLibrary.Data
                 {
                     Title = "Clean Code",
                     Author = "C Martin",
-                    Genre = "Learning",
+                    CategoryId = 1,
                     Year = "2000",
                     IsAvailable = false
                 }
@@ -75,7 +75,7 @@ namespace MvcLibrary.Data
                 {
                     Title = "ASP.NET",
                     Author = "Microsoft",
-                    Genre = "Learning",
+                    CategoryId = 1,
                     Year = "2024"
                 }
             );
@@ -84,7 +84,7 @@ namespace MvcLibrary.Data
                 {
                     Title = "Toy story",
                     Author = "Disney - Pixar",
-                    Genre = "Animation",
+                    CategoryId = 2,
                     Year = "2024"
                 }
             );
@@ -102,6 +102,25 @@ namespace MvcLibrary.Data
                     UserId = 2,
                 }
             );
+        }
+        public static void InitializeCategory(IBaseDataModel repository)
+        {
+            if (repository.Categories.Any())
+            {
+                return;
+            }
+            repository.Categories.Add(
+                new Category
+                {
+                    Title = "Learning"
+                }
+            );
+            repository.Categories.Add(
+               new Category
+               {
+                   Title = "Animation"
+               }
+           );
         }
     }
 }

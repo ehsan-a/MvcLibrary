@@ -7,9 +7,11 @@ namespace MvcLibrary.Controllers
     public class UserController : Controller
     {
         public IRepository<User>? Repository { get; set; }
-        public UserController(IRepository<User> repository)
+        public IRepository<Borrow>? BorrowRepo { get; set; }
+        public UserController(IRepository<User> repository, IRepository<Borrow> borrowRepo)
         {
             Repository = repository;
+            BorrowRepo = borrowRepo;
         }
         public IActionResult Index()
         {
@@ -20,17 +22,16 @@ namespace MvcLibrary.Controllers
 
         public IActionResult Create()
         {
-            if (HttpContext.Session.GetInt32("_userType") != 1)
-                return NotFound();
             return View();
         }
         [HttpPost]
-        public IActionResult Create([Bind("FullName", "Email", "JoinDate", "Username", "Password", "IsAdmin")] User user)
+        public IActionResult Create([Bind("FullName", "Email", "Username", "Password", "IsAdmin")] User user)
         {
-            if (HttpContext.Session.GetInt32("_userType") != 1)
-                return NotFound();
             if (ModelState.IsValid) Repository.Add(user);
-            return RedirectToAction("Index");
+            if (HttpContext.Session.GetInt32("_userType") != 1)
+                return RedirectToAction("Login");
+            else
+                return RedirectToAction("Index");
         }
 
         public IActionResult Edit()
@@ -75,7 +76,12 @@ namespace MvcLibrary.Controllers
         }
         public IActionResult Profile()
         {
-            return View();
+            var records = BorrowRepo.GetAll().Where(x => x.UserId == HttpContext.Session.GetInt32("_userId"));
+            return View(records);
+        }
+        public IActionResult Register()
+        {
+            return RedirectToAction("Create");
         }
     }
 }

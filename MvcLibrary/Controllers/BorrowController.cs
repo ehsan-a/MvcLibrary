@@ -58,23 +58,35 @@ namespace MvcLibrary.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult Edit()
+        public IActionResult Edit(int id)
         {
-            return View();
+            var book = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+            ViewData["UserId"] = new SelectList(HttpContext.Session.GetInt32("_userType") != 1 ? UserRepo.GetAll().Where(x => x.Id == HttpContext.Session.GetInt32("_userId")) : UserRepo.GetAll(), "Id", "FullName");
+            ViewData["BookId"] = new SelectList(BookRepo.GetAll().Where(x => x.IsAvailable == true), "Id", "Title");
+            return View(book);
+        }
+        [HttpPost]
+        public IActionResult Edit(int id, [Bind("Id", "UserId", "BookId")] Borrow borrow)
+        {
+            if (id != borrow.Id) return NotFound();
+            if (ModelState.IsValid)
+            {
+                var preBorrow = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+                preBorrow.Book.IsAvailable = true;
+                preBorrow.UserId = borrow.UserId;
+                preBorrow.BookId = borrow.BookId;
+                BookRepo.GetAll().First(x => x.Id == borrow.BookId).IsAvailable = false;
+            }
+            ViewData["UserId"] = new SelectList(HttpContext.Session.GetInt32("_userType") != 1 ? UserRepo.GetAll().Where(x => x.Id == HttpContext.Session.GetInt32("_userId")) : UserRepo.GetAll(), "Id", "FullName");
+            ViewData["BookId"] = new SelectList(BookRepo.GetAll().Where(x => x.IsAvailable == true), "Id", "Title");
+            return View(borrow);
         }
 
-        public IActionResult Edit(bool notUsed)
-        {
-            return View();
-        }
-
-        public IActionResult Delete()
-        {
-            return View();
-        }
         public IActionResult Details(int id)
         {
-            return View();
+            var book = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+            if (book == null) return NotFound();
+            return View(book);
         }
     }
 }

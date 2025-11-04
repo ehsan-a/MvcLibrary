@@ -14,6 +14,9 @@
         public User()
         {
             Id = _nextId++;
+            JoinDate = DateTime.Now;
+            IsDeleted = false;
+            IsAdmin = false;
         }
     }
 }

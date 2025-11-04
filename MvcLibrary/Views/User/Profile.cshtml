@@ -1,16 +1,77 @@
-﻿@{
+﻿@model IEnumerable<Borrow>
+@{
     ViewData["Title"] = "Profile";
 }
 
 <h1>Profile</h1>
-
+<div>
+    <a asp-action="Logout">Logout</a>
+</div>
 <h4>User</h4>
 <hr />
 
 
-<div>
-    <a asp-action="Logout">Logout</a>
-</div>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Borrow History</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.BookId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UserId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BorrowDate)
+            </th>
+            <th>
+                End Date
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReturnDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsReturned)
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.BookId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UserId)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BorrowDate)
+                </td>
+                <td>
+                    @item.GetReturnDate()
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReturnDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsReturned)
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 
 @section Scripts {
     @{

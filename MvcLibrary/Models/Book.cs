@@ -1,13 +1,18 @@
-﻿namespace MvcLibrary.Models
+﻿using System.ComponentModel;
+
+namespace MvcLibrary.Models
 {
     public class Book
     {
         public int Id { get; set; }
         private static int _nextId { get; set; } = 1;
         public string? Title { get; set; }
-        public string? Genre { get; set; }
+        [DisplayName("Category")]
+        public int CategoryId { get; set; }
+        public Category? Category { get; set; }
         public string? Author { get; set; }
         public string? Year { get; set; }
+        [DisplayName("Available")]
         public bool IsAvailable { get; set; }
         public bool IsDeleted { get; set; }
         public Book()

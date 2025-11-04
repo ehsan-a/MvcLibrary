@@ -9,6 +9,7 @@ builder.Services.AddSingleton<IBaseDataModel, BaseDataModel>();
 builder.Services.AddScoped<IRepository<Book>, BookRepository>();
 builder.Services.AddScoped<IRepository<User>, UserRepository>();
 builder.Services.AddScoped<IRepository<Borrow>, BorrowRepository>();
+builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -33,6 +34,7 @@ using (var scope = app.Services.CreateScope())
     SeedData.InitializeUser(baseData);
     SeedData.InitializeBook(baseData);
     SeedData.InitializeBorrow(baseData);
+    SeedData.InitializeCategory(baseData);
 }
 
 app.UseHttpsRedirection();
