@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Borrow>
+﻿@model FilterViewModel<Borrow>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,32 +9,43 @@
 <p>
     <a class="btn-outline-primary" asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="Borrow" asp-action="Index">
+    <p>
+        <select name="borrowBook" asp-items="Model.SelectListItems">
+            <option value="">All</option>
+        </select>
+        <label>User: <input type="text" asp-for="SearchString" value="@Model.SearchString" /></label>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Book)
+                @Html.DisplayNameFor(model => model.Items[0].Book)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.User)
+                @Html.DisplayNameFor(model => model.Items[0].User)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BorrowDate)
+                @Html.DisplayNameFor(model => model.Items[0].BorrowDate)
             </th>
             <th>
                 End Date
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.ReturnDate)
+                @Html.DisplayNameFor(model => model.Items[0].ReturnDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsReturned)
+                @Html.DisplayNameFor(model => model.Items[0].IsReturned)
             </th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
             <tr>
 
@@ -62,7 +73,7 @@
                         <a asp-action="Return" asp-route-id="@item.Id">Return |</a>
                     }
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                 </td>
             </tr>
         }

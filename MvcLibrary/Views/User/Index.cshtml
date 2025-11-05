@@ -1,4 +1,4 @@
-﻿@model IEnumerable<User>
+﻿@model FilterViewModel<User>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,32 +9,43 @@
 <p>
     <a class="btn-outline-primary" asp-action="Create">Create New</a>
 </p>
+
+<form asp-controller="User" asp-action="Index">
+    <p>
+        <select name="userType" asp-items="Model.SelectListItems">
+            <option value="">All</option>
+        </select>
+        <label>Username: <input type="text" asp-for="SearchString" value="@Model.SearchString" /></label>
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FullName)
+                @Html.DisplayNameFor(model => model.Items[0].FullName)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.Items[0].Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.JoinDate)
+                @Html.DisplayNameFor(model => model.Items[0].JoinDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Username)
+                @Html.DisplayNameFor(model => model.Items[0].Username)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Password)
+                @Html.DisplayNameFor(model => model.Items[0].Password)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.IsAdmin)
+                @Html.DisplayNameFor(model => model.Items[0].IsAdmin)
             </th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Items)
         {
             <tr>
 

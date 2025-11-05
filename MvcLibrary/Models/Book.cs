@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace MvcLibrary.Models
 {
@@ -6,13 +7,16 @@ namespace MvcLibrary.Models
     {
         public int Id { get; set; }
         private static int _nextId { get; set; } = 1;
-        public string? Title { get; set; }
-        [DisplayName("Category")]
+        [Required]
+        public string Title { get; set; }
+        [DisplayName("Category"), Required]
         public int CategoryId { get; set; }
         public Category? Category { get; set; }
-        public string? Author { get; set; }
-        public string? Year { get; set; }
-        [DisplayName("Available")]
+        [Required]
+        public string Author { get; set; }
+        [Required]
+        public string Year { get; set; }
+        [DisplayName("Is Available")]
         public bool IsAvailable { get; set; }
         public bool IsDeleted { get; set; }
         public Book()

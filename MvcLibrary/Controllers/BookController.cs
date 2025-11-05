@@ -7,20 +7,20 @@ namespace MvcLibrary.Controllers
 {
     public class BookController : Controller
     {
-        public BookRepository? Repository { get; set; }
-        public IRepository<Category>? CategoryRepo { get; set; }
+        private readonly BookRepository _repository;
+        private readonly IRepository<Category> _categoryRepo;
         public BookController(IRepository<Book> repository, IRepository<Category> categoryRepo)
         {
-            Repository = repository as BookRepository;
-            CategoryRepo = categoryRepo;
+            _repository = repository as BookRepository;
+            _categoryRepo = categoryRepo;
         }
         public IActionResult Index(string searchString, string bookCategory)
         {
-            IEnumerable<Category> categoryQuery = CategoryRepo.GetAll();
-            var books = Repository.GetAll().Where(x => x.IsDeleted == false);
+            IEnumerable<Category> categoryQuery = _categoryRepo.GetAll();
+            var books = _repository.GetAll().Where(x => x.IsDeleted == false);
             if (!String.IsNullOrEmpty(searchString))
             {
-                books = books.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+                books = books.Where(s => s.Title.ToUpper().Contains(searchString.ToUpper()));
             }
             if (!string.IsNullOrEmpty(bookCategory))
             {
@@ -32,7 +32,6 @@ namespace MvcLibrary.Controllers
                 Items = books.ToList(),
                 SearchString = searchString,
             };
-
             return View(bookFilterVM);
         }
 
@@ -40,7 +39,7 @@ namespace MvcLibrary.Controllers
         {
             if (HttpContext.Session.GetInt32("_userType") != 1)
                 return NotFound();
-            ViewData["CategoryId"] = new SelectList(CategoryRepo.GetAll(), "Id", "Title");
+            ViewData["CategoryId"] = new SelectList(_categoryRepo.GetAll(), "Id", "Title");
             return View();
         }
         [HttpPost]
@@ -48,14 +47,14 @@ namespace MvcLibrary.Controllers
         {
             if (HttpContext.Session.GetInt32("_userType") != 1)
                 return NotFound();
-            if (ModelState.IsValid) Repository.Add(book);
+            if (ModelState.IsValid) _repository.Add(book);
             return RedirectToAction("Index");
         }
 
         public IActionResult Edit(int id)
         {
-            var book = Repository.GetAll().FirstOrDefault(x => x.Id == id);
-            ViewData["CategoryId"] = new SelectList(CategoryRepo.GetAll(), "Id", "Title", id);
+            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+            ViewData["CategoryId"] = new SelectList(_categoryRepo.GetAll(), "Id", "Title", id);
             return View(book);
         }
         [HttpPost]
@@ -64,33 +63,33 @@ namespace MvcLibrary.Controllers
             if (id != book.Id) return NotFound();
             if (ModelState.IsValid)
             {
-                var preBook = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+                var preBook = _repository.GetAll().FirstOrDefault(x => x.Id == id);
                 preBook.Title = book.Title;
                 preBook.Author = book.Author;
                 preBook.CategoryId = book.CategoryId;
                 preBook.Year = book.Year;
             }
-            ViewData["CategoryId"] = new SelectList(CategoryRepo.GetAll(), "Id", "Title", id);
+            ViewData["CategoryId"] = new SelectList(_categoryRepo.GetAll(), "Id", "Title", id);
             return View(book);
         }
 
         public IActionResult Delete(int id)
         {
-            var book = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
             if (book == null) return NotFound();
             return View(book);
         }
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
-            var book = Repository.GetAll().FirstOrDefault(x => x.Id == id);
-            if (book != null) Repository.Delete(book);
+            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+            if (book != null) _repository.Delete(book);
             return RedirectToAction("Index");
         }
 
         public IActionResult Details(int id)
         {
-            var book = Repository.GetAll().FirstOrDefault(x => x.Id == id);
+            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
             if (book == null) return NotFound();
             return View(book);
         }
