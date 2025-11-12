@@ -55,7 +55,7 @@ namespace MvcLibrary.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Books");
+                    b.ToTable("Books", (string)null);
                 });
 
             modelBuilder.Entity("MvcLibrary.Models.Borrow", b =>
@@ -87,7 +87,7 @@ namespace MvcLibrary.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Borrows");
+                    b.ToTable("Borrows", (string)null);
                 });
 
             modelBuilder.Entity("MvcLibrary.Models.Category", b =>
@@ -107,7 +107,7 @@ namespace MvcLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("MvcLibrary.Models.User", b =>
@@ -145,7 +145,7 @@ namespace MvcLibrary.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("MvcLibrary.Models.Book", b =>

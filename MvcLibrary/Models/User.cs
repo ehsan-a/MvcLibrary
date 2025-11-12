@@ -19,7 +19,7 @@ namespace MvcLibrary.Models
         [DisplayName("Is Admin")]
         public bool IsAdmin { get; set; }
         public bool IsDeleted { get; set; }
-        public List<Borrow> Borrows { get; set; }
+        public List<Borrow>? Borrows { get; set; }
         public User()
         {
             JoinDate = DateTime.Now;

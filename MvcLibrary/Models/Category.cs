@@ -8,7 +8,7 @@ namespace MvcLibrary.Models
         [Required]
         public string Title { get; set; }
         public bool IsDeleted { get; set; }
-        public List<Borrow> Books { get; set; }
+        public List<Book>? Books { get; set; }
         public Category()
         {
             IsDeleted = false;

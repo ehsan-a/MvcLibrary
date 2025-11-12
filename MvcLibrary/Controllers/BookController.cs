@@ -61,14 +61,7 @@ namespace MvcLibrary.Controllers
         public IActionResult Edit(int id, [Bind("Id", "Title", "Author", "CategoryId", "Year")] Book book)
         {
             if (id != book.Id) return NotFound();
-            if (ModelState.IsValid)
-            {
-                var preBook = _bookService.GetAll().FirstOrDefault(x => x.Id == id);
-                preBook.Title = book.Title;
-                preBook.Author = book.Author;
-                preBook.CategoryId = book.CategoryId;
-                preBook.Year = book.Year;
-            }
+            if (ModelState.IsValid) _bookService.Update(book);
             ViewData["CategoryId"] = new SelectList(_categoryService.GetAll(), "Id", "Title", id);
             return View(book);
         }

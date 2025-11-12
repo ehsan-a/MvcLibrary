@@ -10,7 +10,7 @@ namespace MvcLibrary.Models
         public string Title { get; set; }
         [DisplayName("Category"), Required]
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
         [Required]
         public string Author { get; set; }
         [Required]
@@ -18,7 +18,7 @@ namespace MvcLibrary.Models
         [DisplayName("Is Available")]
         public bool IsAvailable { get; set; }
         public bool IsDeleted { get; set; }
-        public List<Borrow> Borrows { get; set; }
+        public List<Borrow>? Borrows { get; set; }
         public Book()
         {
             IsAvailable = true;
