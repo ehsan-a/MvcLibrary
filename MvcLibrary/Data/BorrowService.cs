@@ -1,4 +1,5 @@
-﻿using MvcLibrary.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using MvcLibrary.Models;
 
 namespace MvcLibrary.Data
 {
@@ -25,6 +26,6 @@ namespace MvcLibrary.Data
             _dbContext.Borrows.Update(item);
             _dbContext.SaveChanges();
         }
-        public IEnumerable<Borrow> GetAll() => _dbContext.Borrows;
+        public IEnumerable<Borrow> GetAll() => _dbContext.Borrows.Include(x => x.User);
     }
 }

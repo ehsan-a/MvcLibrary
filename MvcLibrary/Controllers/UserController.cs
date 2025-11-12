@@ -109,15 +109,7 @@ namespace MvcLibrary.Controllers
         public IActionResult Edit(int id, [Bind("Id", "FullName", "Email", "Username", "Password", "IsAdmin")] User user)
         {
             if (id != user.Id) return NotFound();
-            if (ModelState.IsValid)
-            {
-                var preUser = _userService.GetAll().FirstOrDefault(x => x.Id == id);
-                preUser.FullName = user.FullName;
-                preUser.Email = user.Email;
-                preUser.Username = user.Username;
-                preUser.Password = user.Password;
-                preUser.IsAdmin = user.IsAdmin;
-            }
+            if (ModelState.IsValid) _userService.Update(user);
             return View(user);
         }
 

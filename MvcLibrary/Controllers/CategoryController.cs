@@ -49,11 +49,7 @@ namespace MvcLibrary.Controllers
         public IActionResult Edit(int id, [Bind("Id", "Title")] Category category)
         {
             if (id != category.Id) return NotFound();
-            if (ModelState.IsValid)
-            {
-                var preCategory = _categoryService.GetAll().FirstOrDefault(x => x.Id == id);
-                preCategory.Title = category.Title;
-            }
+            if (ModelState.IsValid) _categoryService.Update(category);
             return View(category);
         }
 

@@ -89,14 +89,7 @@ namespace MvcLibrary.Controllers
         public IActionResult Edit(int id, [Bind("Id", "UserId", "BookId")] Borrow borrow)
         {
             if (id != borrow.Id) return NotFound();
-            if (ModelState.IsValid)
-            {
-                var preBorrow = _borrowService.GetAll().FirstOrDefault(x => x.Id == id);
-                preBorrow.Book.IsAvailable = true;
-                preBorrow.UserId = borrow.UserId;
-                preBorrow.BookId = borrow.BookId;
-                _bookService.GetAll().First(x => x.Id == borrow.BookId).IsAvailable = false;
-            }
+            if (ModelState.IsValid) _borrowService.Update(borrow);
             ViewData["UserId"] = new SelectList(HttpContext.Session.GetInt32("_userType") != 1 ? _userService.GetAll().Where(x => x.Id == HttpContext.Session.GetInt32("_userId")) : _userService.GetAll(), "Id", "FullName");
             ViewData["BookId"] = new SelectList(_bookService.GetAll().Where(x => x.IsAvailable == true), "Id", "Title");
             return View(borrow);
