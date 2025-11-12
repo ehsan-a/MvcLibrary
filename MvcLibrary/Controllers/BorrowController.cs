@@ -63,7 +63,7 @@ namespace MvcLibrary.Controllers
             return RedirectToAction("Index", "Home");
 
         }
-
+        [HttpGet]
         public IActionResult Return(int id)
         {
             var borrow = _repository.GetAll().FirstOrDefault(x => x.Id == id);
@@ -76,6 +76,7 @@ namespace MvcLibrary.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet]
         public IActionResult Edit(int id)
         {
             var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
@@ -83,6 +84,7 @@ namespace MvcLibrary.Controllers
             ViewData["BookId"] = new SelectList(_bookRepo.GetAll().Where(x => x.IsAvailable == true), "Id", "Title");
             return View(book);
         }
+
         [HttpPost]
         public IActionResult Edit(int id, [Bind("Id", "UserId", "BookId")] Borrow borrow)
         {
@@ -100,6 +102,7 @@ namespace MvcLibrary.Controllers
             return View(borrow);
         }
 
+        [HttpGet]
         public IActionResult Details(int id)
         {
             var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
