@@ -26,22 +26,22 @@
             @Html.DisplayNameFor(model => model.BorrowDate)
         </dt>
         <dd class="col-sm-10">
-            @Html.DisplayNameFor(model => model.BorrowDate)
+            @Html.DisplayFor(model => model.BorrowDate)
         </dd>
         <dt class="col-sm-2">
             End Date
         </dt>
         <dd class="col-sm-10">
-            @Model.DisplayNameFor(model => model.BorrowDate)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayFor(model => model.BorrowDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.GetReturnDate()
+            @Model.GetReturnDate()
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ReturnDate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ReturnDate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IsReturned)
         </dt>
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.IsReturned)
