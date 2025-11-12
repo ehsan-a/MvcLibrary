@@ -1,15 +1,22 @@
+using Microsoft.EntityFrameworkCore;
 using MvcLibrary.Data;
 using MvcLibrary.Models;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddSingleton<IBaseDataModel, BaseDataModel>();
-builder.Services.AddScoped<IRepository<Book>, BookRepository>();
-builder.Services.AddScoped<IRepository<User>, UserRepository>();
-builder.Services.AddScoped<IRepository<Borrow>, BorrowRepository>();
-builder.Services.AddScoped<IRepository<Category>, CategoryRepository>();
+
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped<IService<Book>, BookService>();
+builder.Services.AddScoped<IService<User>, UserService>();
+builder.Services.AddScoped<IService<Borrow>, BorrowService>();
+builder.Services.AddScoped<IService<Category>, CategoryService>();
 
 builder.Services.AddDistributedMemoryCache();
 
@@ -24,17 +31,6 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-}
-
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-
-    var baseData = services.GetRequiredService<IBaseDataModel>();
-    SeedData.InitializeUser(baseData);
-    SeedData.InitializeBook(baseData);
-    SeedData.InitializeBorrow(baseData);
-    SeedData.InitializeCategory(baseData);
 }
 
 app.UseHttpsRedirection();

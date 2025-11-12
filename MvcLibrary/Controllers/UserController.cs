@@ -8,12 +8,12 @@ namespace MvcLibrary.Controllers
 {
     public class UserController : Controller
     {
-        private readonly UserRepository _repository;
-        private readonly IRepository<Borrow> _borrowRepo;
-        public UserController(IRepository<User> repository, IRepository<Borrow> borrowRepo)
+        private readonly UserService _userService;
+        private readonly IService<Borrow> _borrowService;
+        public UserController(IService<User> userService, IService<Borrow> borrowService)
         {
-            _repository = repository as UserRepository;
-            _borrowRepo = borrowRepo;
+            _userService = userService as UserService;
+            _borrowService = borrowService;
         }
         public IActionResult Index(string searchString, string userType)
         {
@@ -21,7 +21,7 @@ namespace MvcLibrary.Controllers
                 return NotFound();
 
             var userQuery = new[] { new { Id = 0, Title = "Normal" }, new { Id = 1, Title = "Admin" } }.ToList();
-            var users = _repository.GetAll().Where(x => x.IsDeleted == false);
+            var users = _userService.GetAll().Where(x => x.IsDeleted == false);
             if (!String.IsNullOrEmpty(searchString))
             {
                 users = users.Where(s => s.Username.ToUpper().Contains(searchString.ToUpper()));
@@ -47,7 +47,7 @@ namespace MvcLibrary.Controllers
         [HttpPost]
         public IActionResult Create([Bind("FullName", "Email", "Username", "Password", "IsAdmin")] User user)
         {
-            if (ModelState.IsValid) _repository.Add(user);
+            if (ModelState.IsValid) _userService.Add(user);
             if (HttpContext.Session.GetInt32("_userType") != 1)
             {
                 TempData["notificationRegister"] = "Register Successful! Please Login.";
@@ -69,7 +69,7 @@ namespace MvcLibrary.Controllers
             if (!string.IsNullOrEmpty(Convert.ToString(HttpContext.Session.GetInt32("_userId"))))
                 return RedirectToAction("Profile");
 
-            var user = _repository.GetAll().FirstOrDefault(x => x.Username == username && x.Password == password);
+            var user = _userService.GetAll().FirstOrDefault(x => x.Username == username && x.Password == password);
             if (user != null)
             {
                 HttpContext.Session.SetInt32("_userId", user.Id);
@@ -92,7 +92,7 @@ namespace MvcLibrary.Controllers
         {
             if (string.IsNullOrEmpty(Convert.ToString(HttpContext.Session.GetInt32("_userId"))))
                 return NotFound();
-            var records = _borrowRepo.GetAll().Where(x => x.UserId == HttpContext.Session.GetInt32("_userId"));
+            var records = _borrowService.GetAll().Where(x => x.UserId == HttpContext.Session.GetInt32("_userId"));
             return View(records);
         }
         public IActionResult Register()
@@ -102,7 +102,7 @@ namespace MvcLibrary.Controllers
 
         public IActionResult Edit(int id)
         {
-            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+            var book = _userService.GetAll().FirstOrDefault(x => x.Id == id);
             return View(book);
         }
         [HttpPost]
@@ -111,7 +111,7 @@ namespace MvcLibrary.Controllers
             if (id != user.Id) return NotFound();
             if (ModelState.IsValid)
             {
-                var preUser = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+                var preUser = _userService.GetAll().FirstOrDefault(x => x.Id == id);
                 preUser.FullName = user.FullName;
                 preUser.Email = user.Email;
                 preUser.Username = user.Username;
@@ -123,21 +123,21 @@ namespace MvcLibrary.Controllers
 
         public IActionResult Delete(int id)
         {
-            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+            var book = _userService.GetAll().FirstOrDefault(x => x.Id == id);
             if (book == null) return NotFound();
             return View(book);
         }
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
-            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
-            if (book != null) _repository.Delete(book);
+            var book = _userService.GetAll().FirstOrDefault(x => x.Id == id);
+            if (book != null) _userService.Delete(book);
             return RedirectToAction("Index");
         }
 
         public IActionResult Details(int id)
         {
-            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+            var book = _userService.GetAll().FirstOrDefault(x => x.Id == id);
             if (book == null) return NotFound();
             return View(book);
         }

@@ -9,22 +9,22 @@ namespace MvcLibrary.Controllers
 {
     public class BorrowController : Controller
     {
-        private readonly IRepository<Borrow> _repository;
-        private readonly IRepository<User> _userRepo;
-        private readonly IRepository<Book> _bookRepo;
-        public BorrowController(IRepository<Borrow> repository, IRepository<User> userRepo, IRepository<Book> bookRepo)
+        private readonly IService<Borrow> _borrowService;
+        private readonly IService<User> _userService;
+        private readonly IService<Book> _bookService;
+        public BorrowController(IService<Borrow> borrowService, IService<User> userService, IService<Book> bookService)
         {
-            _repository = repository;
-            _userRepo = userRepo;
-            _bookRepo = bookRepo;
+            _borrowService = borrowService;
+            _userService = userService;
+            _bookService = bookService;
         }
         public IActionResult Index(string searchString, string borrowBook)
         {
             if (HttpContext.Session.GetInt32("_userType") != 1)
                 return NotFound();
 
-            IEnumerable<Book> bookQuery = _bookRepo.GetAll();
-            var borrows = _repository.GetAll();
+            IEnumerable<Book> bookQuery = _bookService.GetAll();
+            var borrows = _borrowService.GetAll();
             if (!String.IsNullOrEmpty(searchString))
             {
                 borrows = borrows.Where(s => s.User.FullName.ToUpper().Contains(searchString.ToUpper()));
@@ -47,8 +47,8 @@ namespace MvcLibrary.Controllers
         {
             if (string.IsNullOrEmpty(Convert.ToString(HttpContext.Session.GetInt32("_userId"))))
                 return RedirectToAction("Login", "User");
-            ViewData["UserId"] = new SelectList(_userRepo.GetAll().Where(x => x.Id == HttpContext.Session.GetInt32("_userId")), "Id", "FullName");
-            ViewData["BookId"] = new SelectList(_bookRepo.GetAll().Where(x => x.IsAvailable == true), "Id", "Title");
+            ViewData["UserId"] = new SelectList(_userService.GetAll().Where(x => x.Id == HttpContext.Session.GetInt32("_userId")), "Id", "FullName");
+            ViewData["BookId"] = new SelectList(_bookService.GetAll().Where(x => x.IsAvailable == true), "Id", "Title");
             return View();
         }
 
@@ -57,8 +57,8 @@ namespace MvcLibrary.Controllers
         {
             if (ModelState.IsValid)
             {
-                _bookRepo.GetAll().FirstOrDefault(x => x.Id == borrow.BookId).IsAvailable = false;
-                _repository.Add(borrow);
+                _bookService.GetAll().FirstOrDefault(x => x.Id == borrow.BookId).IsAvailable = false;
+                _borrowService.Add(borrow);
             }
             return RedirectToAction("Index", "Home");
 
@@ -66,12 +66,12 @@ namespace MvcLibrary.Controllers
         [HttpGet]
         public IActionResult Return(int id)
         {
-            var borrow = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+            var borrow = _borrowService.GetAll().FirstOrDefault(x => x.Id == id);
             if (borrow != null)
             {
                 borrow.IsReturned = true;
                 borrow.ReturnDate = DateTime.Now;
-                _bookRepo.GetAll().First(x => x.Id == borrow.BookId).IsAvailable = true;
+                _bookService.GetAll().First(x => x.Id == borrow.BookId).IsAvailable = true;
             }
             return RedirectToAction("Index");
         }
@@ -79,9 +79,9 @@ namespace MvcLibrary.Controllers
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
-            ViewData["UserId"] = new SelectList(HttpContext.Session.GetInt32("_userType") != 1 ? _userRepo.GetAll().Where(x => x.Id == HttpContext.Session.GetInt32("_userId")) : _userRepo.GetAll(), "Id", "FullName");
-            ViewData["BookId"] = new SelectList(_bookRepo.GetAll().Where(x => x.IsAvailable == true), "Id", "Title");
+            var book = _borrowService.GetAll().FirstOrDefault(x => x.Id == id);
+            ViewData["UserId"] = new SelectList(HttpContext.Session.GetInt32("_userType") != 1 ? _userService.GetAll().Where(x => x.Id == HttpContext.Session.GetInt32("_userId")) : _userService.GetAll(), "Id", "FullName");
+            ViewData["BookId"] = new SelectList(_bookService.GetAll().Where(x => x.IsAvailable == true), "Id", "Title");
             return View(book);
         }
 
@@ -91,21 +91,21 @@ namespace MvcLibrary.Controllers
             if (id != borrow.Id) return NotFound();
             if (ModelState.IsValid)
             {
-                var preBorrow = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+                var preBorrow = _borrowService.GetAll().FirstOrDefault(x => x.Id == id);
                 preBorrow.Book.IsAvailable = true;
                 preBorrow.UserId = borrow.UserId;
                 preBorrow.BookId = borrow.BookId;
-                _bookRepo.GetAll().First(x => x.Id == borrow.BookId).IsAvailable = false;
+                _bookService.GetAll().First(x => x.Id == borrow.BookId).IsAvailable = false;
             }
-            ViewData["UserId"] = new SelectList(HttpContext.Session.GetInt32("_userType") != 1 ? _userRepo.GetAll().Where(x => x.Id == HttpContext.Session.GetInt32("_userId")) : _userRepo.GetAll(), "Id", "FullName");
-            ViewData["BookId"] = new SelectList(_bookRepo.GetAll().Where(x => x.IsAvailable == true), "Id", "Title");
+            ViewData["UserId"] = new SelectList(HttpContext.Session.GetInt32("_userType") != 1 ? _userService.GetAll().Where(x => x.Id == HttpContext.Session.GetInt32("_userId")) : _userService.GetAll(), "Id", "FullName");
+            ViewData["BookId"] = new SelectList(_bookService.GetAll().Where(x => x.IsAvailable == true), "Id", "Title");
             return View(borrow);
         }
 
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+            var book = _borrowService.GetAll().FirstOrDefault(x => x.Id == id);
             if (book == null) return NotFound();
             return View(book);
         }

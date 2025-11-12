@@ -7,14 +7,14 @@ namespace MvcLibrary.Controllers
 {
     public class CategoryController : Controller
     {
-        private readonly CategoryRepository _repository;
-        public CategoryController(IRepository<Category> repository)
+        private readonly CategoryService _categoryService;
+        public CategoryController(IService<Category> categoryService)
         {
-            _repository = repository as CategoryRepository;
+            _categoryService = categoryService as CategoryService;
         }
         public IActionResult Index(string searchString)
         {
-            var categories = _repository.GetAll().Where(x => x.IsDeleted == false);
+            var categories = _categoryService.GetAll().Where(x => x.IsDeleted == false);
             if (!String.IsNullOrEmpty(searchString))
             {
                 categories = categories.Where(s => s.Title.ToUpper().Contains(searchString.ToUpper()));
@@ -36,13 +36,13 @@ namespace MvcLibrary.Controllers
         {
             if (HttpContext.Session.GetInt32("_userType") != 1)
                 return NotFound();
-            if (ModelState.IsValid) _repository.Add(category);
+            if (ModelState.IsValid) _categoryService.Add(category);
             return RedirectToAction("Index");
         }
 
         public IActionResult Edit(int id)
         {
-            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+            var book = _categoryService.GetAll().FirstOrDefault(x => x.Id == id);
             return View(book);
         }
         [HttpPost]
@@ -51,7 +51,7 @@ namespace MvcLibrary.Controllers
             if (id != category.Id) return NotFound();
             if (ModelState.IsValid)
             {
-                var preCategory = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+                var preCategory = _categoryService.GetAll().FirstOrDefault(x => x.Id == id);
                 preCategory.Title = category.Title;
             }
             return View(category);
@@ -59,21 +59,21 @@ namespace MvcLibrary.Controllers
 
         public IActionResult Delete(int id)
         {
-            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+            var book = _categoryService.GetAll().FirstOrDefault(x => x.Id == id);
             if (book == null) return NotFound();
             return View(book);
         }
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
-            var category = _repository.GetAll().FirstOrDefault(x => x.Id == id);
-            if (category != null) _repository.Delete(category);
+            var category = _categoryService.GetAll().FirstOrDefault(x => x.Id == id);
+            if (category != null) _categoryService.Delete(category);
             return RedirectToAction("Index");
         }
 
         public IActionResult Details(int id)
         {
-            var book = _repository.GetAll().FirstOrDefault(x => x.Id == id);
+            var book = _categoryService.GetAll().FirstOrDefault(x => x.Id == id);
             if (book == null) return NotFound();
             return View(book);
         }

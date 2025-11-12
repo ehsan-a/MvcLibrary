@@ -6,10 +6,9 @@ namespace MvcLibrary.Models
     public class Borrow
     {
         public int Id { get; set; }
-        private static int _nextId { get; set; } = 1;
         [Required]
         public int BookId { get; set; }
-        public Book? Book { get; set; }
+        public Book Book { get; set; }
         [Required]
         public int UserId { get; set; }
         public User? User { get; set; }
@@ -22,7 +21,6 @@ namespace MvcLibrary.Models
         public DateTime GetReturnDate() => BorrowDate.AddDays(10);
         public Borrow()
         {
-            Id = _nextId++;
             IsReturned = false;
             BorrowDate = DateTime.Now;
         }

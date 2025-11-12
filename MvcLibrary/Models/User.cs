@@ -7,7 +7,6 @@ namespace MvcLibrary.Models
     public class User
     {
         public int Id { get; set; }
-        private static int _nextId { get; set; } = 1;
         [Required, DisplayName("Full Name")]
         public string? FullName { get; set; }
         [Required]
@@ -20,9 +19,9 @@ namespace MvcLibrary.Models
         [DisplayName("Is Admin")]
         public bool IsAdmin { get; set; }
         public bool IsDeleted { get; set; }
+        public List<Borrow> Borrows { get; set; }
         public User()
         {
-            Id = _nextId++;
             JoinDate = DateTime.Now;
             IsDeleted = false;
             IsAdmin = false;
