@@ -57,7 +57,7 @@ namespace MvcLibrary.Controllers
         {
             if (ModelState.IsValid)
             {
-                _bookService.GetAll().FirstOrDefault(x => x.Id == borrow.BookId).IsAvailable = false;
+                _bookService.GetAll().First(x => x.Id == borrow.BookId).IsAvailable = false;
                 _borrowService.Add(borrow);
             }
             return RedirectToAction("Index", "Home");
@@ -72,6 +72,7 @@ namespace MvcLibrary.Controllers
                 borrow.IsReturned = true;
                 borrow.ReturnDate = DateTime.Now;
                 _bookService.GetAll().First(x => x.Id == borrow.BookId).IsAvailable = true;
+                _borrowService.Update(borrow);
             }
             return RedirectToAction("Index");
         }
@@ -98,9 +99,9 @@ namespace MvcLibrary.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var book = _borrowService.GetAll().FirstOrDefault(x => x.Id == id);
-            if (book == null) return NotFound();
-            return View(book);
+            var borrow = _borrowService.GetAll().FirstOrDefault(x => x.Id == id);
+            if (borrow == null) return NotFound();
+            return View(borrow);
         }
     }
 }

@@ -26,6 +26,6 @@ namespace MvcLibrary.Data
             _dbContext.Borrows.Update(item);
             _dbContext.SaveChanges();
         }
-        public IEnumerable<Borrow> GetAll() => _dbContext.Borrows.Include(x => x.User);
+        public IEnumerable<Borrow> GetAll() => _dbContext.Borrows.Include(x => x.User).Include(b => b.Book);
     }
 }

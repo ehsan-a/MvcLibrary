@@ -122,16 +122,16 @@ namespace MvcLibrary.Controllers
         [HttpPost, ActionName("Delete")]
         public IActionResult DeleteConfirmed(int id)
         {
-            var book = _userService.GetAll().FirstOrDefault(x => x.Id == id);
-            if (book != null) _userService.Delete(book);
+            var user = _userService.GetAll().FirstOrDefault(x => x.Id == id);
+            if (user != null) _userService.Delete(user);
             return RedirectToAction("Index");
         }
 
         public IActionResult Details(int id)
         {
-            var book = _userService.GetAll().FirstOrDefault(x => x.Id == id);
-            if (book == null) return NotFound();
-            return View(book);
+            var user = _userService.GetAll().FirstOrDefault(x => x.Id == id);
+            if (user == null) return NotFound();
+            return View(user);
         }
     }
 }
